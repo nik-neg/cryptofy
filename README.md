@@ -10,7 +10,7 @@ API_QUOTE_URL=https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
 API_KEY=<YOUR_KEY>
 ```
 
-To start the server, run the following commands:
+To start the server, run the following commands in the server folder:
 
 ```
 docker build -t cryptofy .
