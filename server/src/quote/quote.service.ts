@@ -7,8 +7,6 @@ import * as qs from 'qs';
 @Injectable()
 export class QuoteService {
   async createQuote(createQuoteDto: CreateQuoteDto): Promise<QuoteResponse> {
-    // check where is the crypto value
-
     const { query, baseCurrency, quoteCurrency } =
       this.createQueryString(createQuoteDto);
 
@@ -29,6 +27,7 @@ export class QuoteService {
         quote_amount: this.calculateQuoteAmount(
           price,
           createQuoteDto.base_amount,
+          createQuoteDto.base_currency,
         ),
       };
     } catch (e) {
@@ -38,12 +37,14 @@ export class QuoteService {
   private createQueryString(
     createQuoteDto: Omit<CreateQuoteDto, 'base_amount'>,
   ) {
-    const baseCurrency =
+    const baseCurrency = // always crypto currency
       CryptoCurrency[createQuoteDto.base_currency] ??
       CryptoCurrency[createQuoteDto.quote_currency];
+
     const quoteCurrency =
       QuoteCurrency[createQuoteDto.base_currency] ??
       QuoteCurrency[createQuoteDto.quote_currency];
+
     const query = qs.stringify({
       symbol: baseCurrency,
       convert: quoteCurrency,
@@ -56,7 +57,15 @@ export class QuoteService {
     };
   }
 
-  private calculateQuoteAmount(price: number, baseAmount: number) {
-    return parseFloat((price * baseAmount).toFixed(2));
+  private calculateQuoteAmount(
+    price: number,
+    baseAmount: number,
+    baseCurrency: string,
+  ) {
+    const isBaseCrypto = CryptoCurrency[baseCurrency];
+    if (isBaseCrypto) {
+      return parseFloat((price * baseAmount).toFixed(2));
+    }
+    return parseFloat((baseAmount / price).toFixed(2));
   }
 }
