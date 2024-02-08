@@ -56,14 +56,14 @@ describe('QuotesController', () => {
           status: StatusCodes.BAD_REQUEST,
         },
         {
-          text: '/POST create quote works correctly with crypto currency',
+          text: '/POST create quote works correctly with crypto currency as base currency',
           base_amount: 1,
           base_currency: 'BTC',
           quote_currency: 'USD',
           status: StatusCodes.CREATED,
         },
         {
-          text: '/POST create quote works correctly with crypto currency',
+          text: '/POST create quote works correctly with fiat currency as base currency',
           base_amount: 1,
           base_currency: 'USD',
           quote_currency: 'BTC',
