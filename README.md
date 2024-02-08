@@ -16,10 +16,14 @@ To start the server, run the following commands:
 docker build -t cryptofy .
 
 docker run -p 3000:3000 cryptofy
-
 ```
 
-To run the tests, run the following commands:
+To run the tests, please first add
+the API_KEY to the jest setup, and then run the following commands:
+
+```
+process.env.API_KEY = 'your-api-key';
+```
 
 ```
 npm test
