@@ -1,52 +1,62 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CryptoCurrency,
-  CryptoCurrencyWithQuoteEnumType,
-  QuoteCurrency,
-  QuoteResponse,
-} from './types';
+import { CryptoCurrency, QuoteCurrency, QuoteResponse } from './types';
 import { CreateQuoteDto } from './dto/CreateQuoteDto.dto';
 import axios from 'axios';
-import queryString from 'query-string';
+import * as qs from 'qs';
 
 @Injectable()
 export class QuoteService {
   async createQuote(createQuoteDto: CreateQuoteDto): Promise<QuoteResponse> {
-    const query = queryString.stringify({
-      symbol: createQuoteDto.base_currency,
-      convert: createQuoteDto.quote_currency,
-    });
+    // check where is the crypto value
+
+    const { query, baseCurrency, quoteCurrency } =
+      this.createQueryString(createQuoteDto);
 
     try {
-      const response = await axios.get(`${process.env.API_QUOTE_URL}${query}`, {
-        headers: {
-          'X-CMC_PRO_API_KEY': process.env.API_KEY,
+      const { data } = await axios.get(
+        `${process.env.API_QUOTE_URL}?${query}`,
+        {
+          headers: {
+            'X-CMC_PRO_API_KEY': process.env.API_KEY,
+          },
         },
-      });
+      );
+
+      const price = data.data[baseCurrency]['quote'][quoteCurrency].price;
+
       return {
         ...createQuoteDto,
         quote_amount: this.calculateQuoteAmount(
-          response.data.quote_amount,
-          createQuoteDto.quote_currency,
+          price,
+          createQuoteDto.base_amount,
         ),
       };
     } catch (e) {
       console.log(e);
     }
   }
+  private createQueryString(
+    createQuoteDto: Omit<CreateQuoteDto, 'base_amount'>,
+  ) {
+    const baseCurrency =
+      CryptoCurrency[createQuoteDto.base_currency] ??
+      CryptoCurrency[createQuoteDto.quote_currency];
+    const quoteCurrency =
+      QuoteCurrency[createQuoteDto.base_currency] ??
+      QuoteCurrency[createQuoteDto.quote_currency];
+    const query = qs.stringify({
+      symbol: baseCurrency,
+      convert: quoteCurrency,
+    });
 
-  private calculateQuoteAmount(
-    baseAmount: number,
-    baseCurrency: CryptoCurrencyWithQuoteEnumType,
-  ): number {
-    if (Object.values(QuoteCurrency).includes(baseCurrency as QuoteCurrency)) {
-      return baseAmount;
-    }
-    if (
-      Object.values(CryptoCurrency).includes(baseCurrency as CryptoCurrency)
-    ) {
-      return baseAmount;
-    }
-    return 0;
+    return {
+      query,
+      baseCurrency,
+      quoteCurrency,
+    };
+  }
+
+  private calculateQuoteAmount(price: number, baseAmount: number) {
+    return parseFloat((price * baseAmount).toFixed(2));
   }
 }
