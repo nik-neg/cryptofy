@@ -4,26 +4,49 @@ import * as request from 'supertest';
 import { QuoteController } from './quote.controller';
 import { QuoteService } from './quote.service';
 import { StatusCodes } from 'http-status-codes';
+import { QuoteModule } from './quote.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from '../config/configuration';
+import { HttpModule } from '@nestjs/axios';
 
 describe('QuotesController', () => {
   let app: INestApplication;
   // let quotesService = { createQuote: () => {} };
 
+  // beforeAll(async () => {
+  //   const moduleRef: TestingModule = await Test.createTestingModule({
+  //     imports: [QuoteModule],
+  //     controllers: [QuoteController],
+  //     providers: [
+  //       {
+  //         provide: QuoteService,
+  //         useExisting: QuoteService,
+  //       },
+  //     ],
+  //   }).compile();
+  //
+  //   app = moduleRef.createNestApplication();
+  //   app.useGlobalPipes(new ValidationPipe());
+  //   await app.init();
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
+      imports: [
+        HttpModule,
+        ConfigModule.forRoot({
+          load: [configuration],
+        }),
+        QuoteModule,
+      ], // Only if necessary for the service to work
       controllers: [QuoteController],
-      providers: [
-        {
-          provide: QuoteService,
-          useClass: QuoteService,
-        },
-      ],
+      providers: [QuoteService], // Provide the service directly
     }).compile();
 
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
+
+  // });
 
   describe('calculateFinance DTO validation', () => {
     (() => {
