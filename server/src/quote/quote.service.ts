@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CryptoCurrency, QuoteCurrency, QuoteResponse } from './types';
 import { CreateQuoteDto } from './dto/CreateQuoteDto.dto';
-import axios from 'axios';
 import * as qs from 'qs';
 import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class QuoteService {
   private readonly configService: ConfigService;
-  constructor(configService: ConfigService) {
+  private readonly httpService: HttpService;
+  constructor(configService: ConfigService, httpService: HttpService) {
     this.configService = configService;
+    this.httpService = httpService;
   }
 
   async createQuote(createQuoteDto: CreateQuoteDto): Promise<QuoteResponse> {
@@ -20,13 +22,17 @@ export class QuoteService {
       this.createQueryString(createQuoteDto);
 
     try {
-      const { data } = await axios.get(`${API_QUOTE_URL}?${query}`, {
-        headers: {
-          'X-CMC_PRO_API_KEY': API_KEY,
-        },
-      });
+      const {
+        data: { data },
+      } = await this.httpService
+        .get(`${API_QUOTE_URL}?${query}`, {
+          headers: {
+            'X-CMC_PRO_API_KEY': API_KEY,
+          },
+        })
+        .toPromise();
 
-      const price = data.data[baseCurrency]['quote'][quoteCurrency].price;
+      const price = data[baseCurrency]['quote'][quoteCurrency].price;
 
       return {
         ...createQuoteDto,

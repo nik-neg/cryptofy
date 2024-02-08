@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 
 describe('QuotesController', () => {
   let app: INestApplication;
-  let quotesService = { createQuote: () => {} };
+  // let quotesService = { createQuote: () => {} };
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -15,7 +15,7 @@ describe('QuotesController', () => {
       providers: [
         {
           provide: QuoteService,
-          useValue: quotesService,
+          useClass: QuoteService,
         },
       ],
     }).compile();
@@ -64,7 +64,7 @@ describe('QuotesController', () => {
           status: StatusCodes.CREATED,
         },
         {
-          text: '/POST create quote works correctly with crypto currency',
+          text: '/POST create quote fails due to same base and quote currency',
           base_amount: 1,
           base_currency: 'USD',
           quote_currency: 'USD',
