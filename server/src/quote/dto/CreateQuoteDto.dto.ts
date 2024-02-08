@@ -1,7 +1,6 @@
 import {
-  CryptoCurrency,
-  CryptoCurrencyWithQuoteEnumValues,
-  QuoteCurrency,
+  CryptoCurrencyWithQuoteEnum,
+  CryptoCurrencyWithQuoteEnumType,
 } from '../types';
 import { IsEnum, IsNumber } from 'class-validator';
 
@@ -9,9 +8,9 @@ export class CreateQuoteDto {
   @IsNumber()
   base_amount: number;
 
-  @IsEnum(CryptoCurrencyWithQuoteEnumValues)
-  base_currency: CryptoCurrency;
+  @IsEnum(CryptoCurrencyWithQuoteEnum)
+  base_currency: CryptoCurrencyWithQuoteEnumType;
 
-  @IsEnum(CryptoCurrencyWithQuoteEnumValues)
-  quote_currency: QuoteCurrency;
+  @IsEnum(CryptoCurrencyWithQuoteEnum)
+  quote_currency: CryptoCurrencyWithQuoteEnumType;
 }

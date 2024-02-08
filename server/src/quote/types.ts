@@ -116,9 +116,9 @@ export enum CryptoCurrency {
   XPDG = 'XPDG',
 }
 
-export const CryptoCurrencyWithQuoteEnumValues = {
-  ...Object.values(CryptoCurrency),
-  ...Object.values(QuoteCurrency),
+export const CryptoCurrencyWithQuoteEnum = {
+  ...CryptoCurrency,
+  ...QuoteCurrency,
 };
 
 export type CryptoCurrencyWithQuoteEnumType = CryptoCurrency | QuoteCurrency;
