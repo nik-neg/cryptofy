@@ -78,6 +78,6 @@ export class QuoteService {
     if (isBaseCrypto) {
       return parseFloat((price * baseAmount).toFixed(2));
     }
-    return baseAmount / price; // no need for now to round crypto to 2 decimal places
+    return baseAmount / price; // no need for now to round crypto to x decimal places
   }
 }
