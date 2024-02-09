@@ -32,7 +32,7 @@ export class QuoteService {
         })
         .toPromise();
 
-      const price = data[baseCurrency]['quote'][quoteCurrency].price;
+      const { price } = data[baseCurrency]['quote'][quoteCurrency];
 
       return {
         ...createQuoteDto,
@@ -49,13 +49,14 @@ export class QuoteService {
   private createQueryString(
     createQuoteDto: Omit<CreateQuoteDto, 'base_amount'>,
   ) {
-    const baseCurrency = // always crypto currency
-      CryptoCurrency[createQuoteDto.base_currency] ??
-      CryptoCurrency[createQuoteDto.quote_currency];
+    const { base_currency, quote_currency } = createQuoteDto;
+
+    // always crypto currency
+    const baseCurrency =
+      CryptoCurrency[base_currency] ?? CryptoCurrency[quote_currency];
 
     const quoteCurrency =
-      QuoteCurrency[createQuoteDto.base_currency] ??
-      QuoteCurrency[createQuoteDto.quote_currency];
+      QuoteCurrency[base_currency] ?? QuoteCurrency[quote_currency];
 
     const query = qs.stringify({
       symbol: baseCurrency,
