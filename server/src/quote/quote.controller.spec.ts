@@ -19,17 +19,15 @@ describe('QuotesController', () => {
           load: [configuration],
         }),
         QuoteModule,
-      ], // Only if necessary for the service to work
+      ],
       controllers: [QuoteController],
-      providers: [QuoteService], // Provide the service directly
+      providers: [QuoteService],
     }).compile();
 
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
-
-  // });
 
   describe('calculateFinance DTO validation', () => {
     (() => {
