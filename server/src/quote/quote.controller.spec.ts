@@ -29,7 +29,7 @@ describe('QuotesController', () => {
     await app.init();
   });
 
-  describe('calculateFinance DTO validation', () => {
+  describe('/POST quote', () => {
     (() => {
       [
         {

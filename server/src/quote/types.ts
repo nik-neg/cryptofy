@@ -116,16 +116,16 @@ export enum CryptoCurrency {
   XPDG = 'XPDG',
 }
 
-export const CryptoCurrencyWithQuoteEnum = {
+export const CryptoAndFiatCurrencyEnum = {
   ...CryptoCurrency,
   ...QuoteCurrency,
 };
 
-export type CryptoCurrencyWithQuoteEnumType = CryptoCurrency | QuoteCurrency;
+export type CryptoAndFiatCurrencyEnumType = CryptoCurrency | QuoteCurrency;
 
 export interface QuoteResponse {
   base_amount: number;
-  base_currency: CryptoCurrencyWithQuoteEnumType;
-  quote_currency: CryptoCurrencyWithQuoteEnumType;
+  base_currency: CryptoAndFiatCurrencyEnumType;
+  quote_currency: CryptoAndFiatCurrencyEnumType;
   quote_amount: number;
 }
