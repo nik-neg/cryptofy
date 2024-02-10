@@ -34,3 +34,9 @@ and then run the following commands:
 ```
 npm test
 ```
+
+To test the app with the Swagger UI, please visit:
+
+```
+http://localhost:3000/api
+```
